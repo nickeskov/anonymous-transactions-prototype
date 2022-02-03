@@ -198,30 +198,29 @@ func transfer(proof:ByteVector, v:ByteVector, m0:ByteVector, m1:ByteVector) = {
 func deposit(proof:ByteVector, v:ByteVector, m:ByteVector) = {
     let pmt = {
         if (size(i.payments) != 1) then throw("accept only one payment")
+        else if (isDefined(i.payments[0].assetId)) then throw("can hodl waves only at the moment")
         else
             i.payments[0]
     }
     let mn = getMessageNum()
-    if (isDefined(pmt.assetId)) then throw("can hodl waves only at the moment")
-    else {
-        let hash= take(v, 32)
-        let balance = pmt.amount
-        let v2 = v + base58'111111111111111111111111'+toBytes(balance)
-        let utxoKey = getUtxoKey(hash)
-        if (flagExists(utxoKey)) then 
-            throw("utxo already exists") 
-        else if (!groth16Verify(depositVK, proof, v2)) then
-            throw("wrong proof")
-        else
-            # WriteSet([DataEntry(utxoKey, true), 
-            # DataEntry("MESSAGE_NUM", mn+1),
-            # DataEntry(getMessageKey(mn), hash+m)])
-            [
-                BooleanEntry(utxoKey, true),
-                IntegerEntry("MESSAGE_NUM", mn+1),
-                BinaryEntry(getMessageKey(mn), hash+m)
-            ]
-    }
+
+    let hash= take(v, 32)
+    let balance = pmt.amount
+    let v2 = v + base58'111111111111111111111111'+toBytes(balance)
+    let utxoKey = getUtxoKey(hash)
+    if (flagExists(utxoKey)) then 
+        throw("utxo already exists") 
+    else if (!groth16Verify(depositVK, proof, v2)) then
+        throw("wrong proof")
+    else
+        # WriteSet([DataEntry(utxoKey, true), 
+        # DataEntry("MESSAGE_NUM", mn+1),
+        # DataEntry(getMessageKey(mn), hash+m)])
+        [
+            BooleanEntry(utxoKey, true),
+            IntegerEntry("MESSAGE_NUM", mn+1),
+            BinaryEntry(getMessageKey(mn), hash+m)
+        ]
 }
 
 
