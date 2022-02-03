@@ -1,4 +1,4 @@
-{-# STDLIB_VERSION 3 #-}
+{-# STDLIB_VERSION 5 #-}
 {-# CONTENT_TYPE DAPP #-}
 {-# SCRIPT_TYPE ACCOUNT #-}
 
@@ -16,7 +16,7 @@ func takeLR(v:ByteVector, from:Int, to:Int) = {
 
 func getUtxoKey(utxo:ByteVector) = "U:"+toBase58String(utxo)
 
-
+# getNullifierKey returns `String` nillifier key
 func getNullifierKey(nullifier:ByteVector) = "N:"+toBase58String(nullifier)
 
 func flagExists(key:String) = {
@@ -26,7 +26,8 @@ func flagExists(key:String) = {
     }
 }
 
-func getMessageNum() = {
+# getMessageNum returns `Integer` message num
+func getMessageNum() = { 
     match getInteger(this, "MESSAGE_NUM") {
         case a:Int => a
         case _ => 0
@@ -90,10 +91,16 @@ func withdrawal(proof:ByteVector, v:ByteVector) = {
     else if (!groth16Verify(withdrawalVK, proof, v)) then
         throw("wrong proof")
     else
-        ScriptResult(
-            WriteSet([DataEntry(n, true), DataEntry("MESSAGE_NUM", mn+1), DataEntry(getMessageKey(mn), rn)]),
-            TransferSet([ScriptTransfer(recv, balance-fee, unit)])
-        )
+        # ScriptResult(
+        #     WriteSet([DataEntry(n, true), DataEntry("MESSAGE_NUM", mn+1), DataEntry(getMessageKey(mn), rn)]),
+        #     TransferSet([ScriptTransfer(recv, balance-fee, unit)])
+        # )
+        [
+            BooleanEntry(n, true),
+            IntegerEntry("MESSAGE_NUM", mn+1),
+            BinaryEntry(getMessageKey(mn), rn),
+            ScriptTransfer(recv, balance-fee, unit)
+        ]
 }
 
 
@@ -160,13 +167,21 @@ func transfer(proof:ByteVector, v:ByteVector, m0:ByteVector, m1:ByteVector) = {
     else if (!groth16Verify(transferVK, proof, v)) then
         throw("wrong proof")
     else
-        WriteSet([DataEntry(ouk0, true), 
-            DataEntry(ouk1, true), 
-            DataEntry(n0, true), 
-            DataEntry(n1, true), 
-            DataEntry("MESSAGE_NUM", mn+1),
-            DataEntry(getMessageKey(mn), rn0+rn1+ou0+ou1+m0+m1)
-        ])
+        # WriteSet([DataEntry(ouk0, true), 
+        #     DataEntry(ouk1, true), 
+        #     DataEntry(n0, true), 
+        #     DataEntry(n1, true), 
+        #     DataEntry("MESSAGE_NUM", mn+1),
+        #     DataEntry(getMessageKey(mn), rn0+rn1+ou0+ou1+m0+m1)
+        # ])
+        [
+            BooleanEntry(ouk0, true),
+            BooleanEntry(ouk1, true),
+            BooleanEntry(n0, true),
+            BooleanEntry(n1, true),
+            IntegerEntry("MESSAGE_NUM", mn+1),
+            BinaryEntry(getMessageKey(mn), rn0+rn1+ou0+ou1+m0+m1)
+        ]
 }
 
 
@@ -181,10 +196,14 @@ func transfer(proof:ByteVector, v:ByteVector, m0:ByteVector, m1:ByteVector) = {
 
 @Callable(i)
 func deposit(proof:ByteVector, v:ByteVector, m:ByteVector) = {
-   let pmt = extract(i.payment)
+    let pmt = {
+        if (size(i.payments) != 1) then throw("accept only one payment")
+        else
+            i.payments[0]
+    }
     let mn = getMessageNum()
-   if (isDefined(pmt.assetId)) then throw("can hodl waves only at the moment")
-   else {
+    if (isDefined(pmt.assetId)) then throw("can hodl waves only at the moment")
+    else {
         let hash= take(v, 32)
         let balance = pmt.amount
         let v2 = v + base58'111111111111111111111111'+toBytes(balance)
@@ -194,10 +213,15 @@ func deposit(proof:ByteVector, v:ByteVector, m:ByteVector) = {
         else if (!groth16Verify(depositVK, proof, v2)) then
             throw("wrong proof")
         else
-            WriteSet([DataEntry(utxoKey, true), 
-            DataEntry("MESSAGE_NUM", mn+1),
-            DataEntry(getMessageKey(mn), hash+m)])  
-   }
+            # WriteSet([DataEntry(utxoKey, true), 
+            # DataEntry("MESSAGE_NUM", mn+1),
+            # DataEntry(getMessageKey(mn), hash+m)])
+            [
+                BooleanEntry(utxoKey, true),
+                IntegerEntry("MESSAGE_NUM", mn+1),
+                BinaryEntry(getMessageKey(mn), hash+m)
+            ]
+    }
 }
 
 
