@@ -10,6 +10,8 @@ const { buildGroth16 } = require("websnark");
 const buildpkey = require("./buildpkey.js");
 const buildwitness = require("./buildwitness.js");
 
+const {bn254G1Compressed, bn254G2Compressed} = require("./../../zkgo/js/index.js");
+
 const babyJub = circomlib.babyJub;
 const getBasePoint = circomlib.pedersenHash.getBasePoint;
 
@@ -140,10 +142,38 @@ function verify({ proof, publicSignals }, name) {
   return groth.isValid(vk, proof, publicSignals);
 }
 
-const g1ToBuff = (p) => Buffer.concat([bigInt.beInt2Buff(p[0], 32), bigInt.beInt2Buff(p[1], 32)]);
-const g2ToBuff = (p) => Buffer.concat([bigInt.beInt2Buff(p[0][0], 32), bigInt.beInt2Buff(p[0][1], 32), bigInt.beInt2Buff(p[1][0], 32), bigInt.beInt2Buff(p[1][1], 32)]);
+const g1ToBuff = (p) => {
+  const g1X = bigInt.beInt2Buff(p[0], 32);
+  const g1Y = bigInt.beInt2Buff(p[1], 32);
+  return Buffer.concat([g1X, g1Y]);
+}
+
+const g2ToBuff = (p) => {
+  const g2X = Buffer.concat([bigInt.beInt2Buff(p[0][0], 32), bigInt.beInt2Buff(p[0][1], 32)]);
+  const g2Y = Buffer.concat([bigInt.beInt2Buff(p[1][0], 32), bigInt.beInt2Buff(p[1][1], 32)]);
+  return Buffer.concat([g2X, g2Y]);
+}
+
+const g1ToBuffCompressed = (p) => {
+    const g1X = bigInt.beInt2Buff(p[0], 32);
+    const g1Y = bigInt.beInt2Buff(p[1], 32);
+    const g1Compressed = bn254G1Compressed(g1X, g1Y);
+    return Buffer.concat([g1Compressed]);
+}
+
+const g2ToBuffCompressed = (p) => {
+    const g2X = Buffer.concat([bigInt.beInt2Buff(p[0][0], 32), bigInt.beInt2Buff(p[0][1], 32)]);
+    const g2Y = Buffer.concat([bigInt.beInt2Buff(p[1][0], 32), bigInt.beInt2Buff(p[1][1], 32)]);
+    const g2Compressed = bn254G2Compressed(g2X, g2Y);
+    return Buffer.concat([g2Compressed]);
+}
+
 const serializeVK = (vk) => Buffer.concat([g1ToBuff(vk.vk_alfa_1), ...[vk.vk_beta_2, vk.vk_gamma_2, vk.vk_delta_2].map(g2ToBuff), ...vk.IC.map(g1ToBuff)]);
 const serializeProof = (proof) => Buffer.concat([g1ToBuff(proof.pi_a), g2ToBuff(proof.pi_b), g1ToBuff(proof.pi_c)]);
+
+const serializeVKCompressed = (vk) => Buffer.concat([g1ToBuffCompressed(vk.vk_alfa_1), ...[vk.vk_beta_2, vk.vk_gamma_2, vk.vk_delta_2].map(g2ToBuffCompressed), ...vk.IC.map(g1ToBuffCompressed)]);
+const serializeProofCompressed = (proof) => Buffer.concat([g1ToBuffCompressed(proof.pi_a), g2ToBuffCompressed(proof.pi_b), g1ToBuffCompressed(proof.pi_c)]);
+
 const serializeInputs = (inputs) => Buffer.concat(inputs.map(x => bigInt.beInt2Buff(x, 32)));
 
 
@@ -201,7 +231,7 @@ const getTransferInputs = ({in_hashes, index, nullifier, in_balance, in_secret, 
   const inputs = {in_hashes, index, in_balance, in_secret, out_hash, out_balance, out_entropy, out_pubkey, privkey, entropy};
   if (in_hashes[index[0]]!=in_hashes[index[1]])
     return {...inputs, nullifier}
-  else 
+  else
     return {...inputs, nullifier:[nullifier[0], compress(privkey, entropy)]}
 }
 
@@ -224,7 +254,9 @@ module.exports = {
   g1ToBuff,
   g2ToBuff,
   serializeVK,
+  serializeVKCompressed,
   serializeProof,
+  serializeProofCompressed,
   serializeInputs,
   createUtxo,
   getDepositInputs,
