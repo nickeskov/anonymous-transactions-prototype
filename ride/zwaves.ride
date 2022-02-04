@@ -88,7 +88,7 @@ func withdrawal(proof:ByteVector, v:ByteVector) = {
 #    else if (flagNotExists(uk0) || flagNotExists(uk1) || flagNotExists(uk2) || flagNotExists(uk3) || flagNotExists(uk4) || flagNotExists(uk5) || flagNotExists(uk6) || flagNotExists(uk7)||flagNotExists(uk8) || flagNotExists(uk9) || flagNotExists(uk10) || flagNotExists(uk11) || flagNotExists(uk12) || flagNotExists(uk13) || flagNotExists(uk14) || flagNotExists(uk15)) then
     else if (flagNotExists(uk0) || flagNotExists(uk1) || flagNotExists(uk2) || flagNotExists(uk3) || flagNotExists(uk4) || flagNotExists(uk5) || flagNotExists(uk6) || flagNotExists(uk7)) then
         throw("input utxo not exists")
-    else if (!groth16Verify(withdrawalVK, proof, v)) then
+    else if (!bn256Groth16Verify(withdrawalVK, proof, v)) then
         throw("wrong proof")
     else
         # ScriptResult(
@@ -164,7 +164,7 @@ func transfer(proof:ByteVector, v:ByteVector, m0:ByteVector, m1:ByteVector) = {
         throw("input utxo not exists")
     else if (flagExists(ouk0) || flagExists(ouk1)) then
         throw("output utxo alreadyexists")
-    else if (!groth16Verify(transferVK, proof, v)) then
+    else if (!bn256Groth16Verify(transferVK, proof, v)) then
         throw("wrong proof")
     else
         # WriteSet([DataEntry(ouk0, true), 
@@ -210,7 +210,7 @@ func deposit(proof:ByteVector, v:ByteVector, m:ByteVector) = {
     let utxoKey = getUtxoKey(hash)
     if (flagExists(utxoKey)) then 
         throw("utxo already exists") 
-    else if (!groth16Verify(depositVK, proof, v2)) then
+    else if (!bn256Groth16Verify(depositVK, proof, v2)) then
         throw("wrong proof")
     else
         # WriteSet([DataEntry(utxoKey, true), 
