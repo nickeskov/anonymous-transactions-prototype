@@ -13,13 +13,13 @@ The implementation works with modified waves node, supporting `groth16verify` fu
 Current state of `.env` file is
 
 ```
-WAVES_RPC=http://dev-node-aws-fr-2.wavesnodes.com:6869/
-WAVES_CHAINID=D
-DAPP=2rdJzzFcVeignvBhKyubsPjxM8WdEYyje573eaebEDM8
+WAVES_RPC=https://nodes-stagenet.wavesnodes.com/
+WAVES_CHAINID=S
+DAPP=5QbUEHzU8PHrPm1eCAZ2tjcwYgT5DxA28uGoiGtW8NZE
 MNEMONIC=<your seed passphrase>
 ```
 
-The dApp is deployed at address `3FQ19SGXg2gXcd1AvQAwaP6Sd35knEqggVm` at the moment.
+The dApp is deployed at address `3MYRq8xTmW3LvS75EuG1bvbe2ehyuCvWYSX` at the moment.
 
 ### Faucet
 
