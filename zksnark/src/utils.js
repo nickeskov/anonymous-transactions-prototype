@@ -11,6 +11,7 @@ const buildpkey = require("./buildpkey.js");
 const buildwitness = require("./buildwitness.js");
 
 const {bn254G1Compressed, bn254G2Compressed} = require("./../../zkgo/js/index.js");
+const {toHexString} = require("wasmbuilder/src/utils");
 
 const babyJub = circomlib.babyJub;
 const getBasePoint = circomlib.pedersenHash.getBasePoint;
@@ -145,13 +146,17 @@ function verify({ proof, publicSignals }, name) {
 const g1ToBuff = (p) => {
   const g1X = bigInt.beInt2Buff(p[0], 32);
   const g1Y = bigInt.beInt2Buff(p[1], 32);
-  return Buffer.concat([g1X, g1Y]);
+  const out = Buffer.concat([g1X, g1Y]);
+  // console.log(toHexString(out))
+  return out
 }
 
 const g2ToBuff = (p) => {
   const g2X = Buffer.concat([bigInt.beInt2Buff(p[0][0], 32), bigInt.beInt2Buff(p[0][1], 32)]);
   const g2Y = Buffer.concat([bigInt.beInt2Buff(p[1][0], 32), bigInt.beInt2Buff(p[1][1], 32)]);
-  return Buffer.concat([g2X, g2Y]);
+  const out = Buffer.concat([g2X, g2Y]);
+  // console.log(toHexString(out))
+  return out
 }
 
 const g1ToBuffCompressed = (p) => {

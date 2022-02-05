@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"testing"
 
 	"github.com/mr-tron/base58"
@@ -53,4 +54,23 @@ func TestBN254G2CompressedOK(t *testing.T) {
 		actualG2Compressed := BN254G2Compressed(g2Uncompressed[:64], g2Uncompressed[64:])
 		require.Equal(t, expectedG2Compressed, actualG2Compressed)
 	}
+}
+
+func TestBN254G1FromBytes(t *testing.T) {
+	const g1Hex = "1f4d956b6afbb83114187a32b1d531848fb9a9d0fbef8610364bc7cec7e2ca4f0cd34ac1e1cedd1c28693599feec3d065be3476066f2604e4da06ff9844526e7"
+	g1PointBytes, err := hex.DecodeString(g1Hex)
+	require.NoError(t, err)
+	_, err = g1.FromBytes(g1PointBytes)
+	require.NoError(t, err)
+}
+
+func TestBN254G2FromBytes(t *testing.T) {
+	// TODO(nickeskov): fix it
+	t.Skip("TODO: failing test")
+
+	const g2Hex = "12d5547de85fde740e565626233425c75d9ddb24828971684c26a486cfe8d8e1298e7eacde3643902cb7c3c368438e9a015bba6fbe02a150546c795b367edcf712d8074c1547bbe353b49a4290b9b5f49e29721a8fab60f9735f7c57fac42d3e2260236a735e82b55dc52186e97379639c6673782921afc43933de081f3d49e3"
+	g2PointBytes, err := hex.DecodeString(g2Hex)
+	require.NoError(t, err)
+	_, err = g2.FromBytes(g2PointBytes)
+	require.NoError(t, err)
 }

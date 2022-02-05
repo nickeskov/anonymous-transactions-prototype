@@ -32,12 +32,13 @@ const rpcCall = (rpc) => async (...params) => {
   const p = spawn("node", ["zksnark/cli.js"]);
   let data = [];
   let error = [];
-  //console.log(JSON.stringify(stringifyBigInts({rpc, params})));
-  p.stdin.write(JSON.stringify(stringifyBigInts({rpc, params})));
+  const input = JSON.stringify(stringifyBigInts({rpc, params}))
+  // console.log(input);
+  p.stdin.write(input);
   p.stdout.on('data', (t)=> {data.push(t); });
   p.stderr.on('data', (t)=> {console.log(t.toString()); error.push(t); });
   await new Promise(resolve => p.on('close', resolve));
-  if (error.length>0) throw(Buffer.concat(error).toString()); 
+  if (error.length>0) throw(Buffer.concat(error).toString());
   return unstringifyBigInts(JSON.parse(Buffer.concat(data)));
 }
 
