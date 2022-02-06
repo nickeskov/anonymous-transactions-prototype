@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/hex"
+	"math/big"
 	"testing"
 
 	"github.com/mr-tron/base58"
@@ -56,21 +56,72 @@ func TestBN254G2CompressedOK(t *testing.T) {
 	}
 }
 
+func mustBigIntSetString(s string) *big.Int {
+	i, ok := new(big.Int).SetString(s, 10)
+	if !ok {
+		panic("invalid big int string")
+	}
+	return i
+}
+
 func TestBN254G1FromBytes(t *testing.T) {
-	const g1Hex = "1f4d956b6afbb83114187a32b1d531848fb9a9d0fbef8610364bc7cec7e2ca4f0cd34ac1e1cedd1c28693599feec3d065be3476066f2604e4da06ff9844526e7"
-	g1PointBytes, err := hex.DecodeString(g1Hex)
-	require.NoError(t, err)
-	_, err = g1.FromBytes(g1PointBytes)
-	require.NoError(t, err)
+	// data taken from circom generated keys
+	var (
+		x = mustBigIntSetString("17852300103310459204888193297491828686141226366256779034240822636047378202496")
+		y = mustBigIntSetString("11065892646426371048998032914805261028601277575879971399809385960018646856411")
+	)
+	tests := []struct {
+		x, y *big.Int
+		fail bool
+	}{
+		{x: x, y: y, fail: false},
+		{x: y, y: x, fail: true},
+	}
+	var buf [64]byte
+	for _, test := range tests {
+		xy := buf[:0]
+
+		xy = append(xy, test.x.Bytes()...)
+		xy = append(xy, test.y.Bytes()...)
+
+		_, err := g1.FromBytes(xy)
+		if test.fail {
+			require.Error(t, err)
+		} else {
+			require.NoError(t, err)
+		}
+	}
 }
 
 func TestBN254G2FromBytes(t *testing.T) {
-	// TODO(nickeskov): fix it
-	t.Skip("TODO: failing test")
+	// data taken from circom generated keys
+	var (
+		x1 = mustBigIntSetString("4372317389455666023985613511549128051977767851516241256870911829833568796616")
+		x2 = mustBigIntSetString("1784927807282782431742138711241157089678938426254613185236934932107847685963")
+		y1 = mustBigIntSetString("14217835353186460895475470774650332467562664167326974286740702349059723255722")
+		y2 = mustBigIntSetString("8095075671503443310758210303483283958457562405416963553918949659914027250330")
+	)
+	tests := []struct {
+		x, y [2]*big.Int
+		fail bool
+	}{
+		{x: [...]*big.Int{x1, x2}, y: [...]*big.Int{y1, y2}, fail: true},
+		{x: [...]*big.Int{x2, x1}, y: [...]*big.Int{y2, y1}, fail: false},
+	}
+	var buf [128]byte
+	for _, test := range tests {
+		xy := buf[:0]
 
-	const g2Hex = "12d5547de85fde740e565626233425c75d9ddb24828971684c26a486cfe8d8e1298e7eacde3643902cb7c3c368438e9a015bba6fbe02a150546c795b367edcf712d8074c1547bbe353b49a4290b9b5f49e29721a8fab60f9735f7c57fac42d3e2260236a735e82b55dc52186e97379639c6673782921afc43933de081f3d49e3"
-	g2PointBytes, err := hex.DecodeString(g2Hex)
-	require.NoError(t, err)
-	_, err = g2.FromBytes(g2PointBytes)
-	require.NoError(t, err)
+		xy = append(xy, test.x[0].Bytes()...)
+		xy = append(xy, test.x[1].Bytes()...)
+		xy = append(xy, test.y[0].Bytes()...)
+		xy = append(xy, test.y[1].Bytes()...)
+
+		_, err := g2.FromBytes(xy)
+		if test.fail {
+			require.Error(t, err)
+		} else {
+			require.NoError(t, err)
+		}
+	}
 }
