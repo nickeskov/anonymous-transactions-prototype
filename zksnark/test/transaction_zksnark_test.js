@@ -31,8 +31,8 @@ describe("zkSNARK", ()=>{
 
   const createTestTransfer2to2 = () => {
     const privkey = createPrivkey();
-    const index = [Math.floor(Math.random()*8), 8+Math.floor(Math.random()*8)]
-    const in_utxo = Array(ANONYMITY_SET).fill(0).map((e,i)=>createTestUtxo((i==index[0]||i==index[1])?privkey: createPrivkey()));
+    const index = [Math.floor(Math.random()*8), Math.floor(Math.random()*8)]
+    const in_utxo = Array(ANONYMITY_SET).fill(0).map((e,i)=>createTestUtxo((i===index[0]||i===index[1])?privkey: createPrivkey()));
     const transfer_balance = in_utxo[index[0]].balance+in_utxo[index[1]].balance - 900000n;
     const _out_balance1 = transfer_balance * BigInt(Math.floor(Math.random()*1000)) / 1000n;
     const out_balance = [_out_balance1, transfer_balance - _out_balance1];
@@ -51,7 +51,7 @@ describe("zkSNARK", ()=>{
     const privkey = createPrivkey();
     const _index = Math.floor(Math.random()*ANONYMITY_SET)
     const index = [_index, _index];
-    const in_utxo = Array(ANONYMITY_SET).fill(0).map((e,i)=>createTestUtxo((i==_index)?privkey: createPrivkey()));
+    const in_utxo = Array(ANONYMITY_SET).fill(0).map((e,i)=>createTestUtxo((i===_index)?privkey: createPrivkey()));
     const transfer_balance = in_utxo[_index].balance - 900000n;
     const _out_balance1 = transfer_balance * BigInt(Math.floor(Math.random()*1000)) / 1000n;
     const out_balance = [_out_balance1, transfer_balance - _out_balance1];
@@ -67,7 +67,7 @@ describe("zkSNARK", ()=>{
   }
 
   const getTransferInputs = (t) => {
-    const eq_inputs = (t.in_utxo[t.index[0]].hash==t.in_utxo[t.index[1]].hash);
+    const eq_inputs = (t.in_utxo[t.index[0]].hash===t.in_utxo[t.index[1]].hash);
     const in_hashes = t.in_utxo.map(e=>e.hash);
     const nullifier = eq_inputs ? [t.in_utxo[t.index[0]].nullifier, compress(t.privkey, t.entropy)] : t.index.map(i=>t.in_utxo[i].nullifier);
     const out_hash = t.out_utxo.map(e=>e.hash);
