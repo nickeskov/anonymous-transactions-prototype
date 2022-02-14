@@ -290,9 +290,10 @@ async function collect(db) {
 async function abstractTransfer(pubkey, balance, db) {
   db = await collect(db);
   const assets = Object.values(db.assets);
-  assert(assets[0].balance >= (balance +BigInt(fee)), "Not enough balance to transfer");
-  const in_utxo = [assets[0]];
-  const out_utxo = [{balance, pubkey}, {balance: assets[0].balance - balance - BigInt(fee), pubkey: assets[0].pubkey}];
+  const ownedAsset = assets[0];
+  assert(ownedAsset.balance >= (balance +BigInt(fee)), "Not enough balance to transfer");
+  const in_utxo = [ownedAsset];
+  const out_utxo = [{balance, pubkey}, {balance: ownedAsset.balance - balance - BigInt(fee), pubkey: ownedAsset.pubkey}];
   await transfer(in_utxo, out_utxo, db);
   return await syncData();
 }
@@ -412,7 +413,12 @@ DApp balance:\t\t${balance}
     assert(typeof argv.balance !== 'undefined', "no balance specified");
     const balance = BigInt(argv.balance);
     assert(balance >= BigInt(fee), `balance must be more than fee (${fee})`);
-    console.log("Processing transfer...");
+    const selfpubkey = babyJubJub.pubkey(seed)[0]
+    if (selfpubkey === pubkey) {
+      console.log(`Processing self transfer for ${selfpubkey} ...`);
+    } else {
+      console.log(`Processing transfer from ${selfpubkey} to ${pubkey} ...`);
+    }
     await abstractTransfer(pubkey, balance);
     console.log("OK");
   }
