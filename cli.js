@@ -33,7 +33,7 @@ async function accountDataEx(matches, address, nodeUrl) {
 
 
 let seed = env.MNEMONIC;
-const rpc = env.WAVES_RPC;
+const rpc = env.WAVES_RPC; // nodeURL
 const chainId = env.WAVES_CHAINID;
 
 
@@ -146,7 +146,7 @@ async function transfer(in_utxo, out_utxo, db) {
   }
 
   shuffle(in_hashes);
-  if (in_utxo.length==1) in_utxo = [in_utxo[0], in_utxo[0]];
+  if (in_utxo.length===1) in_utxo = [in_utxo[0], in_utxo[0]];
 
   const index=in_utxo.map(u=>in_hashes.indexOf(u.hash));
   const nullifier = in_utxo.map(x=>x.nullifier);
@@ -266,7 +266,7 @@ function randompk() {
 
 async function balance(db) {
   db = await collect(db);
-  const balance = await nodeInteraction.balance(address(seed, chainId));
+  const balance = await nodeInteraction.balance(address(seed, chainId), rpc);
   const assets = Object.values(db.assets);
   return [balance, assets[0].balance];
 }
@@ -305,7 +305,7 @@ async function abstractWithdrawal(receiver, balance, db) {
   db = await abstractTransfer(assets[0].pubkey, balance+BigInt(fee), db);
   assets = Object.values(db.assets);
   for(let i in assets) {
-    if(assets[i].balance == (balance + BigInt(fee))) {
+    if(assets[i].balance === (balance + BigInt(fee))) {
       await withdrawal(assets[i], receiver, db);
       return await collect();
     } 
