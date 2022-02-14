@@ -18,17 +18,18 @@ const ANONYMITY_SET=8;
 const address2bigint = a => buff2bigintBe(base58Decode(a))
 const validateStatus = (status) => status === 400 || status >= 200 && status < 300
 
-const process400 = (resp) => resp.status === 400
-  ? Promise.reject(Object.assign(new Error(), resp.data))
-  : resp
-
 async function accountDataEx(matches, address, nodeUrl) {
-  const data = await axios.get(`addresses/data/${address}`, { params: {matches}, baseURL: nodeUrl, validateStatus })
-    .then(process400)
-    .then(x => x.data)
-  return data.reduce((acc, item) => ({ ...acc, [item.key]: item }), {})
+  const encodedMatches = encodeURIComponent(matches);
+  const trimmedNodeUrl = nodeUrl.replace(/\/$/, '');
+  const resp = await axios.get(
+      `${trimmedNodeUrl}/addresses/data/${address}?matches=${encodedMatches}`,
+      {validateStatus: validateStatus},
+  );
+  if (resp.status === 400) {
+    throw new Error(resp.data)
+  }
+  return resp.data.reduce((acc, item) => ({ ...acc, [item.key]: item }), {})
 }
-
 
 
 let seed = env.MNEMONIC;
