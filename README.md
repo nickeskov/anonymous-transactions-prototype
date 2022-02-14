@@ -15,11 +15,11 @@ Current state of `.env` file is
 ```
 WAVES_RPC=https://nodes-stagenet.wavesnodes.com/
 WAVES_CHAINID=S
-DAPP=5QbUEHzU8PHrPm1eCAZ2tjcwYgT5DxA28uGoiGtW8NZE
+DAPP=5WpdpgJ8wwoHq3LQWP5LVgzNYVWodvp3zWhTH7MH9Z7V
 MNEMONIC=<your seed passphrase>
 ```
 
-The dApp is deployed at address `3MYRq8xTmW3LvS75EuG1bvbe2ehyuCvWYSX` at the moment.
+The dApp is deployed at stagenet address `3MXLD5eVtKEswHWD5p841dKSzqYgBBV1jeA` at the moment.
 
 ### Faucet
 
