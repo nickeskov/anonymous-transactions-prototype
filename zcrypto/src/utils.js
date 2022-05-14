@@ -1,5 +1,6 @@
-const {spawn} = require('child_process');
+// const {spawn} = require('child_process');
 const fs = require('fs');
+const zksnarkAPI = require("./../../zksnark/api")
 
 function mapObject(obj, fn) {
   return Object.keys(obj).reduce(
@@ -28,19 +29,30 @@ const unstringifyBigInts = (o) => deepMap(o, x=>((typeof(x) === "string") && (/^
 const fload = f => unstringifyBigInts(JSON.parse(fs.readFileSync(f)))
 const fsave = (f, data) => fs.writeFileSync(f, JSON.stringify(stringifyBigInts(data)))
 
-const rpcCall = (rpc) => async (...params) => {
-  const p = spawn("node", ["zksnark/cli.js"]);
-  let data = [];
-  let error = [];
-  const input = JSON.stringify(stringifyBigInts({rpc, params}))
+// const rpcCall = (rpc) => async (...params) => {
+//   const p = spawn("node", ["zksnark/cli.js"]);
+//   let data = [];
+//   let error = [];
+//   const input = JSON.stringify(stringifyBigInts({rpc, params}))
+//   // console.log(input);
+//   p.stdin.write(input);
+//   p.stdout.on('data', (t)=> {data.push(t); });
+//   p.stderr.on('data', (t)=> {console.log(t.toString()); error.push(t); });
+//   await new Promise(resolve => p.on('close', resolve));
+//   if (error.length>0) throw(Buffer.concat(error).toString());
+//   return unstringifyBigInts(JSON.parse(Buffer.concat(data)));
+// }
+
+
+// fakeRPCCall eliminates spawning new unnecessary process
+const fakeRPCCall = (rpc) => async (...params) => {
+  // const input = JSON.stringify(stringifyBigInts({rpc, params}))
   // console.log(input);
-  p.stdin.write(input);
-  p.stdout.on('data', (t)=> {data.push(t); });
-  p.stderr.on('data', (t)=> {console.log(t.toString()); error.push(t); });
-  await new Promise(resolve => p.on('close', resolve));
-  if (error.length>0) throw(Buffer.concat(error).toString());
-  return unstringifyBigInts(JSON.parse(Buffer.concat(data)));
+  return zksnarkAPI[rpc](...params)
 }
+
+// stub for backward compatibility
+const rpcCall = fakeRPCCall
 
 
 function rand256() {
