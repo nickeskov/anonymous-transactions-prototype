@@ -135,7 +135,10 @@ async function proof(input, name) {
   const proof = unstringifyBigInts(await wasmgroth.proof(buildwitness(witness), buildpkey(pk)));
   proof.protocol = "groth";
 
-  return { proof, publicSignals: witness.slice(1, circuit.nPubInputs + circuit.nOutputs + 1) };
+  // extract all public signals
+  const publicSignals = witness.slice(1, circuit.nPubInputs + circuit.nOutputs + 1)
+
+  return { proof, publicSignals: publicSignals };
 }
 
 function verify({ proof, publicSignals }, name) {

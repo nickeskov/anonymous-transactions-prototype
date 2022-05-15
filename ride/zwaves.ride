@@ -206,6 +206,7 @@ func deposit(proof:ByteVector, v:ByteVector, m:ByteVector) = {
 
     let hash= take(v, 32)
     let balance = pmt.amount
+    # restore original inputs, because we need to have balance as public input with leading zeroes
     let v2 = v + base58'111111111111111111111111'+toBytes(balance)
     let utxoKey = getUtxoKey(hash)
     if (flagExists(utxoKey)) then 

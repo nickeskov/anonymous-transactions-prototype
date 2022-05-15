@@ -12,9 +12,15 @@ const api = {
     depositProof: async utxo => {
         const inputs = getDepositInputs(utxo);
         const proofData = await proof(inputs, 'Deposit');
+        // cut balance part
+        // we append this part on-chain because we need leading zeroes
+        // proofData.publicSignals == [ hashSignal, balanceSignal]
+        const pubSignals = proofData.publicSignals.slice(0, -1)
+        // pubSignals == [ hashSignal ]
+        const serializedInputs = serializeInputs(pubSignals)
         return {
             proof:serializeProof(proofData.proof).toString("base64"),
-            inputs:serializeInputs(proofData.publicSignals.slice(0, -1)).toString("base64")
+            inputs:serializedInputs.toString("base64")
         }
     },
     withdrawalProof: async withdrawal => {
