@@ -156,7 +156,9 @@ async function transfer(in_utxo, out_utxo, db) {
   const out_balance = out_utxo.map(x=>x.balance);
   const out_entropy = out_utxo.map(x=>x.entropy);
   const out_pubkey = out_utxo.map(x=>x.pubkey);
+  // privkey needs for dummy nullifer if input UTXOs are the same
   const privkey = babyJubJub.privkey(seed);
+  // privkey entropy for dummy nullifer if input UTXOs are the same
   const entropy = rand256() % (1n<<253n);
 
   const proofData = await transferProof({in_hashes, index, nullifier, in_balance, in_secret, out_hash, out_balance, out_entropy, out_pubkey, privkey, entropy});

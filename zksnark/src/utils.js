@@ -240,10 +240,13 @@ const getDepositInputs = ({hash, balance, pubkey, entropy}) => ({hash, balance, 
 const getWithdrawalInputs = ({in_hashes, nullifier, receiver, balance, index, secret, privkey}) => ({in_hashes, nullifier, receiver, balance, index, secret, privkey});
 const getTransferInputs = ({in_hashes, index, nullifier, in_balance, in_secret, out_hash, out_balance, out_entropy, out_pubkey, privkey, entropy}) => {
   const inputs = {in_hashes, index, in_balance, in_secret, out_hash, out_balance, out_entropy, out_pubkey, privkey, entropy};
-  if (in_hashes[index[0]]!=in_hashes[index[1]])
+  if (in_hashes[index[0]] !== in_hashes[index[1]]) {
     return {...inputs, nullifier}
-  else
-    return {...inputs, nullifier:[nullifier[0], compress(privkey, entropy)]}
+  } else {
+    // change second nullifier to dummy nullifier just to solve the requirements 2 x 2 scheme
+    const dummyNullifier = compress(privkey, entropy)
+    return {...inputs, nullifier:[nullifier[0], dummyNullifier]}
+  }
 }
 
 
