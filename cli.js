@@ -13,6 +13,25 @@ if (env.NODE_ENV !== 'production') {
   require('dotenv').load();
 }
 
+// function parseJSONWithBigInt(json) {
+//   return JSON.parse(j, (key, value) => {
+//     if (typeof(value) === 'string' && /^\d+n$/.test(value)) {
+//       return BigInt(value.slice(0, -1));
+//     }
+//     return value;
+//   });
+// }
+//
+// function stringifyJSONWithBigInt(obj) {
+//   return JSON.stringify(obj, (key, val) => {
+//     if (typeof(val) === "bigint") {
+//       return val.toString() + "n";
+//     } else {
+//       return val;
+//     }
+//   });
+// }
+
 const ANONYMITY_SET=8;
 
 const address2bigint = a => buff2bigintBe(base58Decode(a))
