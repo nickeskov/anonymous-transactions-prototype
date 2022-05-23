@@ -203,7 +203,6 @@ describe("Integration", () => {
     });
 
     it('doublespend second UTXO', async () => {
-      // this is "Cey4sxmNdUaMXKkjr4mY2y2mzuENYVYhRxgzk2bSJLRu" tx on stagenet
       const existedTransferTxData = JSON.parse(existedTransferTxJSON);
       const inputs = Buffer.from(existedTransferTxData.call.args[1].value, "base64");
       // replace first nullifier to new random nullifier which doesn't exist
@@ -217,7 +216,6 @@ describe("Integration", () => {
     });
 
     it('doublespend first UTXO', async () => {
-      // this is "Cey4sxmNdUaMXKkjr4mY2y2mzuENYVYhRxgzk2bSJLRu" tx on stagenet
       const existedTransferTxData = JSON.parse(existedTransferTxJSON);
       const inputs = Buffer.from(existedTransferTxData.call.args[1].value, "base64");
       // replace second nullifier to new random nullifier which doesn't exist
@@ -241,6 +239,36 @@ describe("Integration", () => {
           message: "Error while executing account-script: input utxo not exists",
         });
       }
+    });
+
+    it('out second UTXO already exists', async () => {
+      const existedTransferTxData = JSON.parse(existedTransferTxJSON);
+      const existedInputs = Buffer.from(existedTransferTxData.call.args[1].value, "base64");
+      const existedSecondUTXO = existedInputs.slice(352, 384)
+
+      const inputs = Buffer.from(transferTxData.call.args[1].value, "base64");
+      inputs.write(existedSecondUTXO.toString("base64"), 352, "base64");
+      transferTxData.call.args[1].value = inputs.toString("base64");
+
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, transferTxData), {
+        error: 306,
+        message: "Error while executing account-script: output utxo alreadyexists",
+      });
+    });
+
+    it('out first UTXO already exists', async () => {
+      const existedTransferTxData = JSON.parse(existedTransferTxJSON);
+      const existedInputs = Buffer.from(existedTransferTxData.call.args[1].value, "base64");
+      const existedFirstUTXO = existedInputs.slice(320, 352);
+
+      const inputs = Buffer.from(transferTxData.call.args[1].value, "base64");
+      inputs.write(existedFirstUTXO.toString("base64"), 320, "base64");
+      transferTxData.call.args[1].value = inputs.toString("base64");
+
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, transferTxData), {
+        error: 306,
+        message: "Error while executing account-script: output utxo alreadyexists",
+      });
     });
 
   }).timeout(defaultTimeout);
