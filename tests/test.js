@@ -8,6 +8,8 @@ if (env.NODE_ENV !== 'production') {
   require('dotenv').load();
 }
 
+const ANONYMITY_SET = 8
+
 
 const rpc = env.WAVES_RPC;
 const chainId = env.WAVES_CHAINID;
@@ -143,6 +145,19 @@ describe("Integration", () => {
         message: "Error while executing account-script: wrong proof",
       });
     });
+
+    it('utxo does not exist', async () => {
+      const originalInputs = withdrawalTxData.call.args[1].value;
+      for (let i = 0; i < ANONYMITY_SET; i++) {
+        const inputs = Buffer.from(originalInputs, "base64");
+        inputs[32*i] = 42;
+        withdrawalTxData.call.args[1].value = inputs.toString("base64");
+        await assert.rejects(async () => await invokeAndWaitTx(rpc, withdrawalTxData), {
+          error: 306,
+          message: "Error while executing account-script: input utxo not exists",
+        });
+      }
+    })
 
   }).timeout(defaultTimeout);
 
