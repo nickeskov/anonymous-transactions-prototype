@@ -186,6 +186,8 @@ describe("Integration", () => {
 
 
   describe('transfer negative tests', () => {
+    // this is "9exM13L4BWY5t8AR71ZDMzuLwdEiScGwHmHmHMvoid67" tx on stagenet
+    const existedTransferTxJSON = '{"dApp":"3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W","senderPublicKey":"CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi","chainId":"S","fee":900000,"call":{"function":"transfer","args":[{"type":"binary","value":"I6dTaBWolPkJYa/PSab5Rbq1oBbtH/+UA4oUZXicMoiMCChuec6/1H0qKBjVenlKZw3XzLOcp5YZTy573Sshay6gNYAgbz0G+CWNTlrsMLWWn/3qX7QrYy7VycdlveGohghZmxwadOMxVk4nj5YY7YIh8S+ddN9nEX3PNZJwL+c="},{"type":"binary","value":"HIZFfOWvRbJRHet7JVzIQhCcLqHN82SbEelK1HWaVtwnV+CTWAMwPpXE72DMBJhNycRaJm0NTDQrC5QMl90fyQn9aec5HT+veTehcOg9qPuHXy6DLCIXZVJIBnrm1vVVER7/u0a+9myNhbzIw9DBQgdgvGXlpyRRr1sKTxT8/PgCL8WhU30BQmlI0FiT02ek+YoQpdPSaxBHW4Ij0TTibg7um0bYSG752PWB6STczjhruryyzyh7y/Zx5Wl+18c0AqYAUMUtFEnh9R6ErX5rURIggpzh49iPy6KXkBQe81ou8S07Oppvaw2ZULmCf8Dd9LVkm/U2UI5alKjSPNQrGgdxV26iwp+OXAj4/af0mdItgpBJ/dnYZ+SQbXgCHOYmJvB3VdXqbfDPOVmAUpGs/GvMTtMyBW6udVnjMtbHMNUo1XLAU99TwmbYk7xRy4Vtvr2WBEJ5B2TlXgyOqRJuQhc6crx57OipkIL9NHxDrxYnGbVJMawbempZGYL9fDia"},{"type":"binary","value":"It24cATIez9gj4TgzjAIui00updvvu6VVkgyBBSoHL0bIyZOJ4LtTGIrlpp3c6Ll8NAhCAOdXHCL4ZnA8niwOS2JB21inzku8lrWhg9h7rEXPvXvlNOWWvSC81QqP19NDcxtvRdKXTOFxo1axqhMNuIOge2aoEq5UT+ndISD8YoqIlFYG8u7ZNiO6eOJ8U3yHKbz2MxL7hk+Zvb3vioDAQ=="},{"type":"binary","value":"CqBtn3KCoCwgXsLyHTsMMipj3kDpBZSOdPsp3txThBIqIEW2Tp5SRrha7h6g+z9Ta+qZB11X+5XBnQFdgoI12xUhzFimblL8w73St+DXaplNXdIfIlDwxZnaJvXP1zF5Fsm7qxQm09GeIANbdWAj+2tMNypV6uxiGdjo5ahF6t0LfPY5MFcMmEp7hKe+uR05faRNE/LfM5DaB8LfghZlLA=="}]}}'
     let transferTxData;
 
     beforeEach(() => {
@@ -197,6 +199,34 @@ describe("Integration", () => {
       await assert.rejects(async () => await invokeAndWaitTx(rpc, transferTxData, testSeed), {
         error: 306,
         message: "Error while executing account-script: wrong caller",
+      });
+    });
+
+    it('doublespend second UTXO', async () => {
+      // this is "Cey4sxmNdUaMXKkjr4mY2y2mzuENYVYhRxgzk2bSJLRu" tx on stagenet
+      const existedTransferTxData = JSON.parse(existedTransferTxJSON);
+      const inputs = Buffer.from(existedTransferTxData.call.args[1].value, "base64");
+      // replace first nullifier to new random nullifier which doesn't exist
+      inputs.slice(256, 288).sort(() => Math.random() - 0.5);
+      existedTransferTxData.call.args[1].value = inputs.toString("base64")
+
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, existedTransferTxData), {
+        error: 306,
+        message: "Error while executing account-script: doublespend detected",
+      });
+    });
+
+    it('doublespend first UTXO', async () => {
+      // this is "Cey4sxmNdUaMXKkjr4mY2y2mzuENYVYhRxgzk2bSJLRu" tx on stagenet
+      const existedTransferTxData = JSON.parse(existedTransferTxJSON);
+      const inputs = Buffer.from(existedTransferTxData.call.args[1].value, "base64");
+      // replace second nullifier to new random nullifier which doesn't exist
+      inputs.slice(288, 320).sort(() => Math.random() - 0.5);
+      existedTransferTxData.call.args[1].value = inputs.toString("base64")
+
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, existedTransferTxData), {
+        error: 306,
+        message: "Error while executing account-script: doublespend detected",
       });
     });
 
