@@ -1,5 +1,5 @@
 const { broadcast, waitForTx, invokeScript } = require("@waves/waves-transactions");
-const { address, publicKey, base58encode } = require("@waves/waves-crypto");
+const { address, publicKey, base58encode, base58Decode } = require("@waves/waves-crypto");
 const {serializeMessage} = require("../zcrypto/src/utils");
 const assert = require("assert");
 
@@ -17,7 +17,6 @@ const dAppPublicKey = env.DAPP;
 const dApp = address({publicKey:dAppPublicKey}, chainId);
 const testSeed = env.MNEMONIC_TEST;
 const testPublicKey = publicKey(testSeed)
-const testAccount = address(testSeed, chainId)
 const testAsset = "9VkU45BEvYkE7ka7ZXddc4JSWNysT9NgtjjorL2sWNSt" // test-asset on stagenet
 
 
@@ -167,6 +166,19 @@ describe("Integration", () => {
       await assert.rejects(async () => await invokeAndWaitTx(rpc, withdrawalTxData), {
         error: 306,
         message: "Error while executing account-script: balance must be more then fee",
+      });
+    });
+
+    it('changed receiver', async () => {
+      const inputs = Buffer.from(withdrawalTxData.call.args[1].value, "base64");
+      const testAccount = base58Decode(address(testSeed, chainId))
+      testAccount[16] = 0;
+      // receiverAccount = inputs[294:320]
+      inputs.write(Buffer.from(testAccount).toString("base64"), 294, "base64");
+      withdrawalTxData.call.args[1].value = inputs.toString("base64");
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, withdrawalTxData), {
+        error: 306,
+        message: "Error while executing account-script: wrong proof",
       });
     });
 
