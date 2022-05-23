@@ -184,4 +184,22 @@ describe("Integration", () => {
 
   }).timeout(defaultTimeout);
 
+
+  describe('transfer negative tests', () => {
+    let transferTxData;
+
+    beforeEach(() => {
+      transferTxData = JSON.parse(transferJSONTx);
+    });
+
+    it('wrong caller', async () => {
+      transferTxData.senderPublicKey = testPublicKey
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, transferTxData, testSeed), {
+        error: 306,
+        message: "Error while executing account-script: wrong caller",
+      });
+    });
+
+  }).timeout(defaultTimeout);
+
 })
