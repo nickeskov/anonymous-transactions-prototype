@@ -281,6 +281,19 @@ describe("Integration", () => {
       });
     });
 
+    it('same nullifiers', async () => {
+      const inputs = Buffer.from(transferTxData.call.args[1].value, "base64");
+      const firstNullifier = inputs.slice(256, 288);
+      // replace second nullifier with first nullifier
+      inputs.write(firstNullifier.toString("base64"), 288, "base64");
+      transferTxData.call.args[1].value = inputs.toString("base64");
+
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, transferTxData), {
+        error: 306,
+        message: "Error while executing account-script: wrong proof",
+      });
+    });
+
   }).timeout(defaultTimeout);
 
 });
