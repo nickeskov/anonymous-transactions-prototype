@@ -271,6 +271,16 @@ describe("Integration", () => {
       });
     });
 
+    it('changed proof', async () => {
+      transferTxData.call.args[0].value = Buffer.from(transferTxData.call.args[0].value, "base64")
+          .sort(() => Math.random() - 0.5)
+          .toString("base64");
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, transferTxData), {
+        error: 306,
+        message: "Error while executing account-script: wrong proof",
+      });
+    });
+
   }).timeout(defaultTimeout);
 
 });
