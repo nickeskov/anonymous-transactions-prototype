@@ -22,7 +22,7 @@ const testAsset = "9VkU45BEvYkE7ka7ZXddc4JSWNysT9NgtjjorL2sWNSt" // test-asset o
 
 // seed is required for deposit tx
 const depositJSONTx = '{"dApp":"3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W","chainId":"S","payment":[{"amount":10000000,"assetId":null}],"call":{"function":"deposit","args":[{"type":"binary","value":"Khsbm4KiiSVa/6Rbi8jIsIxvwthZUke1aFYB65tOQ+ePZzqTfDDMTA3eatMSBjftWZOpuuiaHvsV0+aBjo614xiQ0v6GZvXqdcR4pJ5jvwDnL7iyJU3wVbSKjpG94jgliJJHc4OaFFH+t0DbHjxqDkPMhrD7KlMpbhi3UnagcfA="},{"type":"binary","value":"LCiWKPDPsB+29GUvdU+QektH5nCW07I0OL/lCDWpG+4="},{"type":"binary","value":"JlhpDj6RjQl1/FDfqnzF9BahOBAlCvTdY+6UFMmrXawehmsH3woHtNYAfGYbAn8HdU8x8g3TCEnSxDcq+XIaPgEqpGYVoBucd/bE/fQvX6+jn4B8K3OwycTKn6WoEzLyKaP04h83tP52v+9opGMRA2a/60gU9M4jcGY2g5DTxYESMTXklQJ+H/hppfLLIEIpVtwtsuJo0kxDXaaqTYoGIw=="}]},"fee":900000}'
-const withdrawalJSONTx = '{"dApp":"3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W","senderPublicKey":"CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi","chainId":"S","call":{"function":"withdrawal","args":[{"type":"binary","value":"KlyKZbWU47cbrPUTziqCDsXxtUL3Sgt5yOL203Mm1gMZXhLn1u8TOb0//xXTIaNj5Ca6DnSPo5urzRruml8AmS1iRSlb8EbqtHHDOgeo0s+sPABorDjXXUJXwgY1EKGBn71pWvckV9R2TTz4c9vYxKLSc08UJo8/8tS/cNcX4AQ="},{"type":"binary","value":"K8YCaALVmtbI525C9fbDK2iliNPFG0BznMgnoj86Ht8c9+ei29SIEQQ7CSblKertp7A08Tc6ITEX6wnwUWTCDi55/UrDu3EPzWUHhQm76McAIgre4MdZiftTwil0DPraCf1p5zkdP695N6Fw6D2o+4dfLoMsIhdlUkgGeubW9VUTRlmxvNMrNH1x1FnAx3ZIuBxp8AEHrnSVE/g6GaheohNGWbG80ys0fXHUWcDHdki4HGnwAQeudJUT+DoZqF6iJKfmwqMHA8GtYp/7Fep7JTZcAHCjps0+tn3LAgKYUVkhWXfXFK0Mm6UxiKTH3BBqIaTdD9dG8gNDYfK3e5wmuwnJflskyJZOL4CrWVk0cfVPxSbIB4WpekUrAbmmdJLxAAAAAAAAAVNxq/2gY3uwL0vD+aeUbUa75i85yywbakkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKZSIA=="}]},"fee":900000}'
+const withdrawalJSONTx = '{"dApp":"3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W","senderPublicKey":"CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi","chainId":"S","call":{"function":"withdrawal","args":[{"type":"binary","value":"C0lQp+KWwi0x5hijdweZL3p2EYufo9ogpWPeI1yxbs8jE9mZjCiQyHBeOsr05XK6zzKcUg6kAcGHoeeYr4x1/AbtAiS1NO9UNfpkIlPCmFo3J/3vsnzo+7OT1TStlevVlCwsu2a/mx5pFIop58KAjAIqMA/XZlYA2omm3naWFRo="},{"type":"binary","value":"KNVywFPfU8Jm2JO8UcuFbb69lgRCeQdk5V4MjqkSbkIKbRhkHUMmlkzMTEpL6diOf+C9b+XYYpp31Ppj6c+mUgIVF81QniW5duhaZtxnphH9WXAzynZUj/phab2Sf4hUI4vPJ4OtlgRmGVE1TTHI9c5dLjO/DAyiGRf/57mvVpgXOnK8eezoqZCC/TR8Q68WJxm1STGsG3pqWRmC/Xw4mhXBtLmkBVn7TdnOucZnIxKBbE5bFRDyFJFR2ouExVoSGsw1JouFAMfxk20ZQDAHTEmgLHfnLhomVsC7lWlRd6ArGgxZIqOX/516lO2kgtkK/SmVSKFdlXdGSnyLbWBc2h+0lZr/3DzPohhluciieDoAnJY1x1+1QYRGQF7WAxo4AAAAAAAAAVNxq/2gY3uwL0vD+aeUbUa75i85yywbakkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKZSIA=="}]},"fee":900000}'
 const transferJSONTx = '{"dApp":"3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W","senderPublicKey":"CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi","chainId":"S","fee":900000,"call":{"function":"transfer","args":[{"type":"binary","value":"LCRZ6FHSvT9LWgfmu3M13IVMPoa5d4pnQy4qXCpE5nqKm0zcT3E/VDdFYoal75m7blMJOsI283k7FcaolbGukSDnRFBK15/GiWhSRWFNpYJB3D86wP0xGnfmlyjzWpBSkcOXoiJv5bqzX/qST+nYkXd4OmokMhAhzOkUV0xkoMY="},{"type":"binary","value":"FqlFJQR79atTVjNUrse71+M3rMDFutJIj4xsWGIcXe0TRlmxvNMrNH1x1FnAx3ZIuBxp8AEHrnSVE/g6GaheohRfU9pPBuijSZK15Bq8d4iHxicyEqVRafeygeLGr/OCEGog2UQYqF6ZdrYjkU5eSvcYTpGZFBDKS4INrHm1Q7cUX1PaTwboo0mSteQavHeIh8YnMhKlUWn3soHixq/zghyGRXzlr0WyUR3reyVcyEIQnC6hzfNkmxHpStR1mlbcJWAA9iZpJxRKXiUHYCGoQOVVtK68NIVIf94k9q7ymVATRlmxvNMrNH1x1FnAx3ZIuBxp8AEHrnSVE/g6GaheohdT4V/Vnz5EyYGLB/HoXL9Crc6im7pB0EQnXiQvx18XJZX6rwl04pzNEnM7jxZ1ECXOSdCG32q4PF1z82DJHusFmTC1myWPXMD3tiMMP21KW74rtQnE07/2SH7XbLm9sBRnp7KjsEdXDD2iYvFUL70wD/gChCooNrX5+G96g2gn"},{"type":"binary","value":"A4GBx1L3Ev3zXyj6FFPeh/ziOJw6ITJnGkntqp/BbxQMNj0GT1DJ9e40OvqACEg/uvJ9olzpMM1hnGaS6/IEqg1KkYQ8j6JejJJHNfk30drPPzGZJt3I2cphkcaVwXWzJPkRvrhzGdlclIYAwRFRaO3uwSfQZrmYg6Y2LJiNiM4mqLsGJf4VI7OaMqn3wwIJ833Z1PCGOGG+u8UXFmCXXg=="},{"type":"binary","value":"GFa7enPhhQuxnmt5D4Q+Fl6AAop4X7WsYVPl7yKukZ0P+DTrxG4Fu4+BXnosEMxhcCWfpZ31uzA9LTf6cSa/TSMXa2rTBmrro1C0CH1fp7ff0x0uoItoxebq5VVYv1fIGkQfTHh5AqrBNtGCAIRe+q52bgm/c2SVqRfJMpvqYvQdYe6/DS0y5fliiR4aVsSL2jh59r0+LSDggQWImPDKSA=="}]}}'
 
 
@@ -145,11 +145,11 @@ describe("Integration", () => {
       });
     });
 
-    it('utxo does not exist', async () => {
+    it('UTXO does not exist', async () => {
       const originalInputs = withdrawalTxData.call.args[1].value;
       for (let i = 0; i < ANONYMITY_SET; i++) {
         const inputs = Buffer.from(originalInputs, "base64");
-        inputs[32*i] = 42;
+        inputs.slice(32*i, 32*(i+1)).sort(() => Math.random())
         withdrawalTxData.call.args[1].value = inputs.toString("base64");
         await assert.rejects(async () => await invokeAndWaitTx(rpc, withdrawalTxData), {
           error: 306,
@@ -172,7 +172,7 @@ describe("Integration", () => {
     it('changed receiver', async () => {
       const inputs = Buffer.from(withdrawalTxData.call.args[1].value, "base64");
       const testAccount = base58Decode(address(testSeed, chainId))
-      testAccount[16] = 0;
+      testAccount.sort(() => Math.random() - 0.5)
       // receiverAccount = inputs[294:320]
       inputs.write(Buffer.from(testAccount).toString("base64"), 294, "base64");
       withdrawalTxData.call.args[1].value = inputs.toString("base64");
