@@ -3,6 +3,7 @@ const snarkjs = require("snarkjs");
 const fs = require("fs");
 const {basename} = require("path");
 const { groth, Circuit, bigInt } = snarkjs;
+const crypto = require("crypto");
 
 const { stringifyBigInts, unstringifyBigInts } = require("snarkjs/src/stringifybigint");
 
@@ -108,11 +109,15 @@ function compress253(v1, v2) {
   return babyJub.unpackPoint(pedersenHash(b_v))[0] & ((1n << 253n) - 1n);
 }
 
+function cryptoRand32() {
+  return crypto.randomBytes(4).readUInt32BE(0);
+}
+
 function rand256() {
-  n = 0n;
-  for (let i = 0; i < 9; i++) {
-    const x = Math.floor(Math.random() * (1 << 30));
-    n = (n << 30n) + BigInt(x);
+  let n = 0n;
+  for (let i = 0; i < 8; i++) {
+    const x = cryptoRand32();
+    n = (n << 32n) + BigInt(x);
   }
   return n % (1n << 256n);
 }

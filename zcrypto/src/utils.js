@@ -1,6 +1,7 @@
 // const {spawn} = require('child_process');
 const fs = require('fs');
 const zksnarkAPI = require("./../../zksnark/api")
+const crypto = require("crypto");
 
 function mapObject(obj, fn) {
   return Object.keys(obj).reduce(
@@ -54,15 +55,19 @@ const fakeRPCCall = (rpc) => async (...params) => {
 // stub for backward compatibility
 const rpcCall = fakeRPCCall
 
+function cryptoRand32() {
+  return crypto.randomBytes(4).readUInt32BE(0);
+}
 
 function rand256() {
-  n = 0n;
-  for (let i = 0; i < 9; i++) {
-    const x = Math.floor(Math.random() * (1 << 30));
-    n = (n << 30n) + BigInt(x);
+  let n = 0n;
+  for (let i = 0; i < 8; i++) {
+    const x = cryptoRand32();
+    n = (n << 32n) + BigInt(x);
   }
   return n % (1n << 256n);
 }
+
 
 const bigint2buffLe = (x, n) => {
   const b = Buffer.alloc(n);
