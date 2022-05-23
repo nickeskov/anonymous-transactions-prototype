@@ -124,6 +124,16 @@ describe("Integration", () => {
       });
     });
 
+    it('doublespend', async () => {
+      // this is "Cey4sxmNdUaMXKkjr4mY2y2mzuENYVYhRxgzk2bSJLRu" tx on stagenet
+      const existedWithdrawalTxJSON = '{"dApp":"3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W","senderPublicKey":"CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi","chainId":"S","call":{"function":"withdrawal","args":[{"type":"binary","value":"jvhLO70Ms9PvjvPS+Dh9hKtyBUX7lOjfvNSL2Lh+9j2rL4LVoehkP7nFL+37qcQ4Rd7FiLGuZN0uR7gmvmfgYh8KqkWsdbfEuKjkMZSPWQNcmSlrkDfdpTT2DGZIa5rrmmnek6OW6KZiB7JCskUEvL0jXN1DG4v98ivjcfak/fg="},{"type":"binary","value":"KxoMWSKjl/+depTtpILZCv0plUihXZV3Rkp8i21gXNoJ/WnnOR0/r3k3oXDoPaj7h18ugywiF2VSSAZ65tb1VQt77vqMQTixlx4q4FHIlL1twyctrOnlzwqevrTIonBYGVnPfSGz+t9i5SuOj/0XAW3duV/DQJemF38BZ3MV/FsJ/WnnOR0/r3k3oXDoPaj7h18ugywiF2VSSAZ65tb1VQcEMK5PK5nvEDVJMxoJGwUMzN5ORrcVXKjKLA7AVsULAhUXzVCeJbl26Fpm3GemEf1ZcDPKdlSP+mFpvZJ/iFQJ/WnnOR0/r3k3oXDoPaj7h18ugywiF2VSSAZ65tb1VR6POEMx+oWIS59nGHpOu/CmU2jKlU97azWLb7PjYQ1hAAAAAAAAAVNxq/2gY3uwL0vD+aeUbUa75i85yywbakkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKZSIA=="}]},"fee":900000}'
+      const existedWithdrawalTxData = JSON.parse(existedWithdrawalTxJSON);
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, existedWithdrawalTxData), {
+        error: 306,
+        message: "Error while executing account-script: doublespend detected",
+      });
+    });
+
   }).timeout(defaultTimeout);
 
 })
