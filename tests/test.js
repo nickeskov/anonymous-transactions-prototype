@@ -159,6 +159,17 @@ describe("Integration", () => {
       }
     })
 
+    it('insufficient balance', async () => {
+      const inputs = Buffer.from(withdrawalTxData.call.args[1].value, "base64");
+      const newBalance = withdrawalTxData.fee - 1;
+      inputs.writeUInt32BE(newBalance,320+8*3+4); // + 4 because ride has 64-bytes numbers
+      withdrawalTxData.call.args[1].value = inputs.toString("base64");
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, withdrawalTxData), {
+        error: 306,
+        message: "Error while executing account-script: balance must be more then fee",
+      });
+    });
+
   }).timeout(defaultTimeout);
 
 })
