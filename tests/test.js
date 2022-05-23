@@ -36,6 +36,7 @@ async function invokeAndWaitTx(rpc, txData, seed) {
 describe("Integration", () => {
   const defaultTimeout = "60s";
 
+
   describe('deposit negative tests', () => {
     let depositTxData;
 
@@ -102,6 +103,24 @@ describe("Integration", () => {
       await assert.rejects(async () => await invokeAndWaitTx(rpc, existedDepositTxData, testSeed), {
         error: 306,
         message: "Error while executing account-script: utxo already exists",
+      });
+    });
+
+  }).timeout(defaultTimeout);
+
+
+  describe('withdrawal negative tests', () => {
+    let withdrawalTxData;
+
+    beforeEach(() => {
+      withdrawalTxData = JSON.parse(withdrawalJSONTx);
+    });
+
+    it('wrong caller', async () => {
+      withdrawalTxData.senderPublicKey = testPublicKey
+      await assert.rejects(async () => await invokeAndWaitTx(rpc, withdrawalTxData, testSeed), {
+        error: 306,
+        message: "Error while executing account-script: wrong caller",
       });
     });
 
