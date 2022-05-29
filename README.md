@@ -1,6 +1,7 @@
 # Anonymous transactions engine for Waves blockchain
 
-This is anonymous transaction engine, implemented for waves blockchain. This is prototype, so, the project is very experimental.
+This is an anonymous transaction engine, implemented for [waves blockchain](https://github.com/wavesplatform/).
+This is a prototype, so the project is very experimental.
 
 ### Dependencies
 
@@ -8,22 +9,23 @@ This is anonymous transaction engine, implemented for waves blockchain. This is 
 
 ### Waves node
 
-The implementation works with modified waves node, supporting `groth16verify` function. The source code is at [https://github.com/snjax/Waves/tree/feature/groth16verifier](https://github.com/snjax/Waves/tree/feature/groth16verifier).
+Current implementation works with waves node, supporting `groth16Verify` function (i.e. after RideV4). 
 
 Current state of `.env` file is
 
 ```
 WAVES_RPC=https://nodes-stagenet.wavesnodes.com/
 WAVES_CHAINID=S
-DAPP=5WpdpgJ8wwoHq3LQWP5LVgzNYVWodvp3zWhTH7MH9Z7V
+DAPP=CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi
 MNEMONIC=<your seed passphrase>
 ```
 
-The dApp is deployed at stagenet address `3MXLD5eVtKEswHWD5p841dKSzqYgBBV1jeA` at the moment.
+The dApp is deployed at stagenet address `3Ma1Q2MsjGoVJjaGEf9Y26C8ojnRjun2m8W` at the moment.
 
 ### Faucet
 
-Type `node faucet.js` to get 100 test WAVES for your address, corresponding to `MNEMONIC`.
+- [On stagenet](https://stagenet.wavesexplorer.com/faucet)
+- [On testnet](https://testnet.wavesexplorer.com/faucet)
 
 ### Cryptography
 
@@ -60,7 +62,7 @@ The transactions are not signed, the fee is payable inside the snark. The receiv
 
 The first clone this repository via
 ```
-git clone https://github.com/wavesplatform/anonymous-transactions-prototype
+git clone https://github.com/nickeskov/anonymous-transactions-prototype
 ```
 After that install all npm packages
 ```
