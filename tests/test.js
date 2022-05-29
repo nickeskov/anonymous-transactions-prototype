@@ -14,7 +14,7 @@ const rpc = env.WAVES_RPC; // "https://nodes-stagenet.wavesnodes.com/"
 const chainId = env.WAVES_CHAINID; // "S"
 const dAppPublicKey = env.DAPP; // "CvKjq7UNkBCm84SWghatFi1iuq5ihs9EZ2H2ipUx3oNi"
 const dApp = address({publicKey:dAppPublicKey}, chainId);
-const testSeed = env.MNEMONIC_TEST; // seed phrase
+const testSeed = env.MNEMONIC_TEST; // seed phrase "badge biology gasp easily exit rural vendor trick tank vocal disorder tongue purpose lawsuit green"
 const testPublicKey = publicKey(testSeed);
 const testAsset = "9VkU45BEvYkE7ka7ZXddc4JSWNysT9NgtjjorL2sWNSt" // "test-asset" on stagenet
 
