@@ -1,4 +1,4 @@
-# Anonymous transactions on wavesplatform
+# Anonymous transactions on waves blockchain
 
 ## State
 
@@ -28,7 +28,7 @@ Deposits are usual invokeScript transactions.
 
 ### Deposit
 
-![deposit](https://raw.githubusercontent.com/snjax/drawio/master/deposit.svg?sanitize=true)
+![deposit](img/deposit.svg)
 
 #### zkSNARK
 ```
@@ -51,7 +51,7 @@ func deposit(proof:ByteVector, v:ByteVector)
 
 ### Transfer
 
-![transfer](https://raw.githubusercontent.com/snjax/drawio/master/transfer.svg?sanitize=true)
+![transfer](img/transfer.svg)
 
 #### zkSNARK
 
@@ -93,7 +93,7 @@ func transfer(msg:ByteVector, sig:ByteVector, pub:ByteVector)
 
 ### Withdrawal
 
-![withdrawal](https://raw.githubusercontent.com/snjax/drawio/master/withdrawal.svg?sanitize=true)
+![withdrawal](img/withdrawal.svg)
 
 #### zkSNARK
 ```

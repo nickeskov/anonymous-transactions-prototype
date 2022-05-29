@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wavesplatform/anonymous-transactions-prototype.git"
+    "url": "git+https://github.com/nickeskov/anonymous-transactions-prototype.git"
   },
-  "author": "Igor Gulamov",
+  "author": "Nikolay Eskov",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/wavesplatform/anonymous-transactions-prototype/issues"
+    "url": "https://github.com/nickeskov/anonymous-transactions-prototype/issues"
   },
-  "homepage": "https://github.com/wavesplatform/anonymous-transactions-prototype#readme",
+  "homepage": "https://github.com/nickeskov/anonymous-transactions-prototype#readme",
   "devDependencies": {
     "mocha": "^6.1.4",
     "snarkjs": "^0.1.14",
